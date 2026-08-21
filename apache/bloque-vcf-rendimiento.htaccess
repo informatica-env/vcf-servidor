@@ -1,0 +1,17 @@
+# BEGIN VCF-rendimiento  (anadido 17/08/2026)
+# Para revertir: borrar este bloque, o  cp .htaccess.bak-20260817-1650 .htaccess
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# 1) 404 inmediato para rutas de medios con barra final (foo.jpg/). Una ruta asi
+#    no puede corresponder a ningun fichero, pero la reescritura de WordPress la
+#    mandaba a index.php y arrancaba el CMS entero solo para devolver un 404.
+#    Medido: 1.675 peticiones, 22.501 s de CPU en dos horas, cero respuestas 200.
+RewriteRule ^wp-content/uploads/.+\.(jpe?g|png|gif|webp|avif|svg|ico|bmp|tiff?|pdf|mp4|m4v|mov|webm|mp3|wav|ogg|zip)/+$ - [R=404,L,NC]
+# 2) Bloqueo de 84.75.40.238: rastreador con 2.447 peticiones y 25.431 s de CPU
+#    (7 horas) en dos horas, casi todo 404. Autorizado por el propietario.
+#    Se comprueban las dos vias porque Nginx hace de proxy delante de Apache.
+RewriteCond %{REMOTE_ADDR} ^84\.75\.40\.238$ [OR]
+RewriteCond %{HTTP:X-Forwarded-For} (^|,[ ]?)84\.75\.40\.238($|,)
+RewriteRule ^ - [F,L]
+</IfModule>
+# END VCF-rendimiento
