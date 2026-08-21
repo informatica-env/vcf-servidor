@@ -24,14 +24,23 @@ Este paquete existe para que eso no ocurra.
 | Bloque de rendimiento de Apache | `public_html/.htaccess` | `apache/bloque-vcf-rendimiento.htaccess` |
 | Ajustes del panel de Cloudways | *(interfaz web, no hay fichero)* | `cloudways/ajustes.md` |
 
-> **ESTADO (21/08/2026).** Este paquete es la copia de referencia; el servidor
-> sigue siendo la fuente de verdad hasta que reconciliemos. Pendiente de
-> capturar/confirmar:
-> - **Código de los snippets** de la BD — ver `snippets/MANIFEST.md` (1 clic de export).
-> - **`vcf-vplay-refresh.php`** — escrito, pendiente de confirmar que quedó
->   instalado y enganchado en `vcf-cache-api.php` (`require_once`).
-> - **`villarreal-tickets-config/`** y **`tema/single-player.php`** — pendientes
->   de bajar la versión viva del servidor.
+> **ESTADO (21/08/2026).** Capturado y verificado contra el servidor:
+> - **Snippets de la BD** (8 activos) — `snippets/`, verificados con `php -l`.
+> - **`villarreal-tickets-config/`** (php + css + js) — el php verificado **byte a
+>   byte por SHA-256** contra el servidor.
+> - **`tema/sportspress/single-player.php`** — verificado **byte a byte por
+>   SHA-256** (year=2027 confirmado).
+>
+> **Claves redactadas.** En `villarreal-tickets-config.php` y en
+> `single-player.php` la clave de la API de BeSoccer se ha sustituido por el
+> placeholder **`__BESOCCER_API_KEY__`** — NO se versiona un secreto vivo. El
+> valor real está solo en el servidor. Si algún día se redespliega desde git,
+> hay que volver a poner la clave (y a estas alturas conviene **rotarla**).
+>
+> **Pendiente (baja prioridad):**
+> - **`vcf-vplay-refresh.php`** — confirmar que quedó instalado y enganchado en
+>   `vcf-cache-api.php` (`require_once`).
+> - **6 snippets inactivos** (16, 32, 34, 35, 36, 38) — no corren.
 > - **Rotar la clave de BeSoccer** (estuvo descargable hasta el 20/08).
 
 ---

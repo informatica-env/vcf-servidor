@@ -1,0 +1,49 @@
+.vcf-tickets-wrap .vcf-tickets-table {
+	margin-top: 16px;
+}
+
+.vcf-tickets-wrap .vcf-match-details.vcf-hidden,
+.vcf-tickets-wrap .vcf-vip-fields.vcf-hidden,
+.vcf-tickets-wrap .vcf-moreinfo-fields.vcf-hidden {
+	display: none;
+}
+
+.vcf-tickets-wrap .vcf-fields-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(220px, 1fr));
+	gap: 14px 24px;
+	padding: 12px 0;
+}
+
+.vcf-tickets-wrap .vcf-field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.vcf-tickets-wrap .vcf-field-wide {
+	grid-column: 1 / -1;
+}
+
+.vcf-tickets-wrap .vcf-field-checkbox {
+	grid-column: 1 / -1;
+	flex-direction: row;
+	align-items: center;
+}
+
+.vcf-tickets-wrap .vcf-field input[type="text"],
+.vcf-tickets-wrap .vcf-field input[type="url"],
+.vcf-tickets-wrap .vcf-field textarea {
+	width: 100%;
+	max-width: 480px;
+}
+
+.vcf-tickets-wrap .vcf-vip-fields,
+.vcf-tickets-wrap .vcf-moreinfo-fields {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(220px, 1fr));
+	gap: 14px 24px;
+	padding-left: 24px;
+	border-left: 3px solid #e0e0e0;
+}
