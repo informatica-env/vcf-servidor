@@ -80,13 +80,8 @@ const VCF_NUNCA_CACHEAR = '#/(custom/v1/form-nonce|wpforms|jwt-auth|wp/v2/users)
 
 /**
  * Listados y busquedas: nadie los purga al publicar, asi que viven poco.
- *
- * check-live entra aqui tambien: el helper vcf_youtube_live_id() (tema
- * smart-mag) ya cachea la respuesta a YouTube en un transient de 30 s, asi
- * que 60 s de Varnish por delante no retrasa la deteccion de directo de forma
- * perceptible y evita que cada visita llegue siquiera a arrancar WordPress.
  */
-const VCF_ES_LISTADO = '#/(posts/search|pages/search|search-page|posts_swiper|post-by-slug|page-by-path|check-live)#i';
+const VCF_ES_LISTADO = '#/(posts/search|pages/search|search-page|posts_swiper|post-by-slug|page-by-path)#i';
 
 const VCF_TTL_LISTADO = 60;   // segundos
 const VCF_TTL_RECURSO = 300;  // segundos

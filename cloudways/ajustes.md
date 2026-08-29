@@ -73,7 +73,16 @@ ya el segundo cinturón, no el primero.
 
 ---
 
-## 5. Slow Query Log de MySQL — pendiente de activar (incidencia 28/08/2026)
+## 5. `check-live` — eliminado, no pendiente de arreglo (incidencia 28/08/2026)
+
+`custom/v1/check-live` e `insertar_precarga_y_video()`
+(`wp-content/themes/smart-mag/functions.php`) hacían un `file_get_contents()`
+síncrono, sin timeout ni caché, contra YouTube en cada visita — sangraban
+workers de PHP y agravaban las ráfagas de MySQL del pico de carga. Confirmado
+que es funcionalidad antigua sin uso: se comentó directamente en el
+servidor. No queda ninguna acción pendiente sobre este punto.
+
+## 6. Slow Query Log de MySQL — pendiente de activar (incidencia 28/08/2026)
 
 **Server Management → Manage Services → MySQL → Slow Query Log**
 
@@ -89,7 +98,7 @@ registrada con la consulta exacta. Candidatas por el slow log ya visto:
 `WP_Query` / `get_posts` / `get_col` contra una `wp_posts` con **355.964
 adjuntos**. No es autoload (las opciones autoload suman 0,41 MB, sano).
 
-## 6. Imunify360 — bajar frecuencia / excluir `uploads` (incidencia 28/08/2026)
+## 7. Imunify360 — bajar frecuencia / excluir `uploads` (incidencia 28/08/2026)
 
 **Server Management → Security → Imunify360** (o soporte de Cloudways si no
 está expuesto en el panel)
@@ -104,7 +113,7 @@ pico, pero da tirones cuando coincide con las ráfagas de MySQL.
 el riesgo de no escanearlos es bajo frente al coste de escanear 356k ficheros
 en caliente).
 
-## 7. Lo que **no** se tocó, y por qué conviene saberlo
+## 8. Lo que **no** se tocó, y por qué conviene saberlo
 
 - **Cloudflare está descartado.** Bloquea IPs y los días de partido tira la web.
   No proponerlo.

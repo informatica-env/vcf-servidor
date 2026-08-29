@@ -21,7 +21,6 @@ Este paquete existe para que eso no ocurra.
 | Plugin de config. de entradas | `wp-content/plugins/villarreal-tickets-config/` | `plugins/villarreal-tickets-config/` |
 | **Snippets de la base de datos** (Code Snippets) | tabla `wp_snippets` | `snippets/` (ver `MANIFEST.md`) |
 | Ficha de jugador del tema | `wp-content/themes/.../single-player.php` | `tema/` |
-| check-live cacheado (tema smart-mag) | `wp-content/themes/smart-mag/functions.php` | `tema/smart-mag/check-live.php` |
 | Bloque de rendimiento de Apache | `public_html/.htaccess` | `apache/bloque-vcf-rendimiento.htaccess` |
 | Ajustes del panel de Cloudways | *(interfaz web, no hay fichero)* | `cloudways/ajustes.md` |
 
@@ -156,30 +155,20 @@ por eso son los más fáciles de perder.
 
 ---
 
-## 5. `check-live` — corte del sangrado de workers de PHP (incidencia 28/08/2026)
+## 5. `check-live` — eliminado por no usarse (incidencia 28/08/2026)
 
-**Qué hace:** `tema/smart-mag/check-live.php` sustituye las tres llamadas
-`file_get_contents()` a YouTube (síncronas, sin timeout, sin caché) que hacían
-la ruta REST `custom/v1/check-live` y `insertar_precarga_y_video()` (en
-`wp_footer`) por un único helper, `vcf_youtube_live_id()`, con transient de
-30 s (10 s si no hay directo) y timeout de 3 s.
+Durante el diagnóstico del pico de carga del 28/08 se localizó
+`custom/v1/check-live` y `insertar_precarga_y_video()` (en `wp_footer`) en
+`wp-content/themes/smart-mag/functions.php`: hacían un `file_get_contents()`
+síncrono, sin timeout ni caché, contra YouTube en cada visita/petición,
+sangrando workers de PHP (1.049 respuestas 499 en 24 h) y agravando las
+ráfagas de MySQL.
 
-**Por qué existe:** con el polling de `custom.js:471` en cada carga de
-página, cada visitante disparaba una llamada externa bloqueante. Cuando
-YouTube iba lento, esa llamada se comía un worker de PHP entero — 1.049
-respuestas 499 (cliente que aborta) repartidas en 24 h — agravando las
-ráfagas de MySQL del pico de carga del 28/08. Es el mismo fallo que ya se
-corrigió en el snippet 37 (ficha de jugador).
-
-**Instalación:** ver las instrucciones dentro del propio fichero — hay que
-editar a mano `wp-content/themes/smart-mag/functions.php` (localizar las tres
-apariciones de `custom/v1/check-live`, dos comentadas, y
-`insertar_precarga_y_video()`) porque el `functions.php` completo del tema no
-está capturado en este repositorio.
-
-**Relacionado:** `check-live` se añadió también al patrón de rutas
-cacheables de `vcf-cache-api` (60 s de Varnish por delante del transient de
-30 s), para que la mayoría de visitas ni siquiera arranquen WordPress.
+Confirmado que es una funcionalidad antigua sin uso real: **se comentó
+directamente en el servidor** en vez de optimizarla. No queda código de
+`check-live` en este repositorio ni en `vcf-cache-api` (se había añadido
+temporalmente al patrón de rutas cacheables; se revirtió al confirmarse que
+se elimina).
 
 **Pendiente, fuera de este repo (ver `cloudways/ajustes.md` §5-6):**
 activar el *Slow Query Log* de MySQL para cazar la consulta que dispara las
