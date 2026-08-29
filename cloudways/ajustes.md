@@ -73,7 +73,38 @@ ya el segundo cinturón, no el primero.
 
 ---
 
-## 5. Lo que **no** se tocó, y por qué conviene saberlo
+## 5. Slow Query Log de MySQL — pendiente de activar (incidencia 28/08/2026)
+
+**Server Management → Manage Services → MySQL → Slow Query Log**
+
+**Por qué.** El 28/08 hubo un pico de `load average` (60+) sin CPU, disco ni
+MySQL saturados en el muestreo: eran ráfagas de segundos, y `mysqld` acumulaba
+**4h 06min de CPU en 8h 39min de vida** — el mayor consumidor del servidor —
+sin que se cazara ninguna consulta en vivo (el `PROCESSLIST` salía casi vacío
+cada vez que se miró). Sin el slow log activo seguimos a ciegas sobre cuál es
+la consulta que dispara las ráfagas.
+
+**Acción.** Activarlo desde el panel para que la próxima ráfaga quede
+registrada con la consulta exacta. Candidatas por el slow log ya visto:
+`WP_Query` / `get_posts` / `get_col` contra una `wp_posts` con **355.964
+adjuntos**. No es autoload (las opciones autoload suman 0,41 MB, sano).
+
+## 6. Imunify360 — bajar frecuencia / excluir `uploads` (incidencia 28/08/2026)
+
+**Server Management → Security → Imunify360** (o soporte de Cloudways si no
+está expuesto en el panel)
+
+**Por qué.** Tres procesos (`rustbolit`, `wafd_imunify_da`,
+`imunify-residen`) escanean en segundo plano una biblioteca de **356.000
+ficheros** en `wp-content/uploads`. Es un consumo constante de CPU, no un
+pico, pero da tirones cuando coincide con las ráfagas de MySQL.
+
+**Acción propuesta.** Bajar la frecuencia del escaneo y/o excluir
+`wp-content/uploads` (son medios ya servidos por Varnish/CDN, no ejecutables:
+el riesgo de no escanearlos es bajo frente al coste de escanear 356k ficheros
+en caliente).
+
+## 7. Lo que **no** se tocó, y por qué conviene saberlo
 
 - **Cloudflare está descartado.** Bloquea IPs y los días de partido tira la web.
   No proponerlo.
